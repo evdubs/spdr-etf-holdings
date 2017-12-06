@@ -10,3 +10,7 @@ $ Racket transform-load.rkt
 The provided schema.sql file shows the expected schema within the target PostgreSQL instance. 
 This process assumes you can write to a /var/tmp/spdr folder. This process also assumes you have loaded your database with NASDAQ symbol
 file information. This data is provided by the [nasdaq-symbols](https://github.com/evdubs/nasdaq-symbols) project.
+
+When reading the XLS documents, we are using the mysterx project, which uses COM to query the XLS files. As a result, I believe this only 
+works on Windows. Perhaps someday Racket will receive a library like the Apache POI that is a pure implementation capable of reading from 
+Office documents directly.
