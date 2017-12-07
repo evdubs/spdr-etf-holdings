@@ -42,7 +42,7 @@
 (define sectors (list "Consumer Discretionary" "Consumer Staples" "Energy" "Financials" "Health Care" "Industrials"
                       "Information Technology" "Materials" "Real Estate" "Telecommunication Services" "Utilities"))
 
-; Index ETFs break down their components by sector
+; Core ETFs break down their components by sector
 (define index-etfs (list "DIA" "MDY" "SLY" "SPY"))
 
 (define industries (list
