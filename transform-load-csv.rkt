@@ -1,6 +1,7 @@
 #lang racket
 
 (require db)
+(require racket/cmdline)
 (require srfi/19) ; Time Data Types and Procedures
 (require threading)
 
@@ -12,39 +13,36 @@
    shares-held)
   #:transparent)
 
-(display "etf holdings base folder [/var/tmp/spdr/etf-holdings]: ")
-(flush-output)
-(define etf-holdings-base-folder
-  (let ([etf-holdings-base-folder-input (read-line)])
-    (if (equal? "" etf-holdings-base-folder-input) "/var/tmp/spdr/etf-holdings"
-        etf-holdings-base-folder-input)))
+(define base-folder (make-parameter "/var/tmp/spdr/etf-holdings"))
 
-(display (string-append "etf holdings folder date [" (date->string (current-date) "~1") "]: "))
-(flush-output)
-(define folder-date
-  (let ([date-string-input (read-line)])
-    (if (equal? "" date-string-input) (current-date)
-        (string->date date-string-input "~Y-~m-~d"))))
+(define folder-date (make-parameter (current-date)))
 
-(display "db user [user]: ")
-(flush-output)
-(define db-user
-  (let ([db-user-input (read-line)])
-    (if (equal? "" db-user-input) "user"
-        db-user-input)))
+(define db-user (make-parameter "user"))
 
-(display "db name [local]: ")
-(flush-output)
-(define db-name
-  (let ([db-name-input (read-line)])
-    (if (equal? "" db-name-input) "local"
-        db-name-input)))
+(define db-name (make-parameter "local"))
 
-(display "db pass []: ")
-(flush-output)
-(define db-pass (read-line))
+(define db-pass (make-parameter ""))
 
-(define dbc (postgresql-connect #:user db-user #:database db-name #:password db-pass))
+(command-line
+ #:program "racket transform-load-com.rkt"
+ #:once-each
+ [("-b" "--base-folder") folder
+                         "SPDR ETF Holdings base folder. Defaults to /var/tmp/spdr/etf-holdings"
+                         (base-folder folder)]
+ [("-d" "--folder-date") date
+                         "SPDR ETF Holdings folder date. Defaults to today"
+                         (folder-date (string->date date "~Y-~m-~d"))]
+ [("-n" "--db-name") name
+                     "Database name. Defaults to 'local'"
+                     (db-name name)]
+ [("-p" "--db-pass") password
+                     "Database password"
+                     (db-pass password)]
+ [("-u" "--db-user") user
+                     "Database user name. Defaults to 'user'"
+                     (db-user user)])
+
+(define dbc (postgresql-connect #:user (db-user) #:database (db-name) #:password (db-pass)))
 
 (define sectors (list "Consumer Discretionary" "Consumer Staples" "Energy" "Financials" "Health Care" "Industrials"
                       "Information Technology" "Materials" "Real Estate" "Telecommunication Services" "Utilities"))
@@ -134,9 +132,9 @@
 ; Industry ETFs break down their components by sub-industry
 (define industry-etfs (list "KBE" "KCE" "KIE" "KRE" "XAR" "XBI" "XES" "XHB" "XHE" "XHS" "XME" "XOP" "XPH" "XRT" "XSD" "XSW" "XTH" "XTL" "XTN" "XWEB"))
 
-(parameterize ([current-directory (string-append etf-holdings-base-folder "/" (date->string folder-date "~1") "/")])
+(parameterize ([current-directory (string-append (base-folder) "/" (date->string (folder-date) "~1") "/")])
   (for ([p (sequence-filter (λ (p) (string-contains? (path->string p) ".csv")) (in-directory))])
-    (let ([file-name (string-append etf-holdings-base-folder "/" (date->string folder-date "~1") "/" (path->string p))]
+    (let ([file-name (string-append (base-folder) "/" (date->string (folder-date) "~1") "/" (path->string p))]
           [ticker-symbol (string-replace (path->string p) ".csv" "")])
       (call-with-input-file file-name
         (λ (in)
@@ -153,7 +151,7 @@
             (with-handlers ([exn:fail? (λ (e) (displayln (string-append "Failed to process "
                                                                         ticker-symbol
                                                                         " for date "
-                                                                        (date->string folder-date "~1")))
+                                                                        (date->string (folder-date) "~1")))
                                          (displayln ((error-value->string-handler) e 1000))
                                          (rollback-transaction dbc))])
               (for-each (λ (row)
@@ -181,7 +179,7 @@ insert into spdr.etf_holding
 ) on conflict (etf_symbol, date, component_symbol) do nothing;
 "
                                       ticker-symbol
-                                      (date->string folder-date "~1")
+                                      (date->string (folder-date) "~1")
                                       (case (etf-component-identifier row)
                                         [("CCL.U") "CCL"]
                                         [("*CM") "CM"]
