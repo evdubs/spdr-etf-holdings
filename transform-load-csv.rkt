@@ -15,6 +15,8 @@
 
 (define base-folder (make-parameter "/var/tmp/spdr/etf-holdings"))
 
+(define convert-xls (make-parameter #f))
+
 (define folder-date (make-parameter (current-date)))
 
 (define db-user (make-parameter "user"))
@@ -29,6 +31,8 @@
  [("-b" "--base-folder") folder
                          "SPDR ETF Holdings base folder. Defaults to /var/tmp/spdr/etf-holdings"
                          (base-folder folder)]
+ [("-c" "--convert-xls") "Convert XLS documents to CSV for handling. This requires libreoffice to be installed"
+                         (convert-xls #t)]
  [("-d" "--folder-date") date
                          "SPDR ETF Holdings folder date. Defaults to today"
                          (folder-date (string->date date "~Y-~m-~d"))]
@@ -133,6 +137,9 @@
 (define industry-etfs (list "KBE" "KCE" "KIE" "KRE" "XAR" "XBI" "XES" "XHB" "XHE" "XHS" "XME" "XOP" "XPH" "XRT" "XSD" "XSW" "XTH" "XTL" "XTN" "XWEB"))
 
 (parameterize ([current-directory (string-append (base-folder) "/" (date->string (folder-date) "~1") "/")])
+  (cond [(convert-xls)
+         (for ([p (sequence-filter (λ (p) (string-contains? (path->string p) ".xls")) (in-directory))])
+           (system (string-append "libreoffice --headless --convert-to csv --outdir " (path->string (current-directory)) " " (path->string p))))])
   (for ([p (sequence-filter (λ (p) (string-contains? (path->string p) ".csv")) (in-directory))])
     (let ([file-name (string-append (base-folder) "/" (date->string (folder-date) "~1") "/" (path->string p))]
           [ticker-symbol (string-replace (path->string p) ".csv" "")])
