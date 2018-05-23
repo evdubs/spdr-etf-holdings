@@ -26,7 +26,7 @@
 (define db-pass (make-parameter ""))
 
 (command-line
- #:program "racket transform-load-com.rkt"
+ #:program "racket transform-load-csv.rkt"
  #:once-each
  [("-b" "--base-folder") folder
                          "SPDR ETF Holdings base folder. Defaults to /var/tmp/spdr/etf-holdings"
