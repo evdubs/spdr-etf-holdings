@@ -18,7 +18,7 @@
                    ; Core ETFs
                    "DIA" "MDY" "SLY" "SPY"
                    ; Sector ETFs
-                   "XLB" "XLE" "XLF" "XLI" "XLK" "XLP" "XLRE" "XLU" "XLV" "XLY"
+                   "XLB" "XLC" "XLE" "XLF" "XLI" "XLK" "XLP" "XLRE" "XLU" "XLV" "XLY"
                    ; Industry (Modified Equal Weighted) ETFs
                    "KBE" "KCE" "KIE" "KRE" "XAR" "XBI" "XES" "XHB" "XHE" "XHS" "XME" "XOP" "XPH" "XRT" "XSD" "XSW" "XTH" "XTL" "XTN" "XWEB"))
 

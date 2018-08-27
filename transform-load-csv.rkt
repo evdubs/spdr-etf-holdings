@@ -84,7 +84,7 @@
                     "Specialty Retail" "Textiles Apparel & Luxury Goods"))
 
 ; Sector ETFs break down their components by industry
-(define sector-etfs (list "XLB" "XLE" "XLF" "XLI" "XLK" "XLP" "XLRE" "XLU" "XLV" "XLY"))
+(define sector-etfs (list "XLB" "XLC" "XLE" "XLF" "XLI" "XLK" "XLP" "XLRE" "XLU" "XLV" "XLY"))
 
 (define sub-industries (list
                         ; Banks
@@ -155,13 +155,18 @@
             (displayln "Will not insert the following rows as the Sector/Industry/Sub-Industry is not in our definitions:")
             (~> (filter (λ (row) (not (void? (etf-component-sector row)))) invalid-rows)
                 (for-each (λ (row) (displayln row)) _))
+            (define insert-counter 0)
+            (define insert-success-counter 0)
+            (define insert-failure-counter 0)
             (with-handlers ([exn:fail? (λ (e) (displayln (string-append "Failed to process "
                                                                         ticker-symbol
                                                                         " for date "
                                                                         (date->string (folder-date) "~1")))
                                          (displayln ((error-value->string-handler) e 1000))
-                                         (rollback-transaction dbc))])
+                                         (rollback-transaction dbc)
+                                         (set! insert-failure-counter (add1 insert-failure-counter)))])
               (for-each (λ (row)
+                          (set! insert-counter (add1 insert-counter))
                           (start-transaction dbc)
                           (query-exec dbc "
 insert into spdr.etf_holding
@@ -196,6 +201,10 @@ insert into spdr.etf_holding
                                       (if (member ticker-symbol sector-etfs) (etf-component-sector row) sql-null)
                                       (if (member ticker-symbol industry-etfs) (etf-component-sector row) sql-null)
                                       (etf-component-shares-held row))
-                          (commit-transaction dbc)) valid-rows))))))))
+                          (commit-transaction dbc)
+                          (set! insert-success-counter (add1 insert-success-counter))) valid-rows))
+            (displayln (string-append "Attempted to insert " (number->string insert-counter) " rows. "
+                                      (number->string insert-success-counter) " were successful. "
+                                      (number->string insert-failure-counter) " failed."))))))))
 
 (disconnect dbc)
