@@ -1,9 +1,10 @@
-#lang racket
+#lang racket/base
 
 ;;
 ;; Use COM & mysterx to integrate with excel
 ;;
-(require mysterx)
+(require mysterx
+         racket/contract/base)
 
 ;; Some types - for all I know, a cell can hold more than just a 
 ;; string, number of empty. But this is what I've seen so far.

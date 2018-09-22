@@ -1,9 +1,12 @@
-#lang racket
+#lang racket/base
 
-(require net/url)
-(require srfi/19) ; Time Data Types and Procedures
-(require tasks)
-(require threading)
+(require net/url
+         racket/file
+         racket/list
+         racket/port
+         srfi/19 ; Time Data Types and Procedures
+         tasks
+         threading)
 
 (define (download-etf-holdings symbol)
   (make-directory* (string-append "/var/tmp/spdr/etf-holdings/" (date->string (current-date) "~1")))

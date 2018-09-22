@@ -1,10 +1,13 @@
-#lang racket
+#lang racket/base
 
-(require db)
-(require racket/cmdline)
-(require srfi/19) ; Time Data Types and Procedures
-(require threading)
-(require "xls-api.rkt")
+(require db
+         racket/cmdline
+         racket/list
+         racket/sequence
+         racket/string
+         srfi/19 ; Time Data Types and Procedures
+         threading
+         "xls-api.rkt")
 
 (define base-folder (make-parameter "/var/tmp/spdr/etf-holdings"))
 
