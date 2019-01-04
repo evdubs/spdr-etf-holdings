@@ -52,8 +52,8 @@
 
 (define dbc (postgresql-connect #:user (db-user) #:database (db-name) #:password (db-pass)))
 
-(define sectors (list "Consumer Discretionary" "Consumer Staples" "Energy" "Financials" "Health Care" "Industrials"
-                      "Information Technology" "Materials" "Real Estate" "Telecommunication Services" "Utilities"))
+(define sectors (list "Communication Services" "Consumer Discretionary" "Consumer Staples" "Energy" "Financials" "Health Care"
+                      "Industrials" "Information Technology" "Materials" "Real Estate" "Telecommunication Services" "Utilities"))
 
 ; Core ETFs break down their components by sector
 (define index-etfs (list "DIA" "MDY" "SLY" "SPY"))
@@ -85,7 +85,9 @@
                     ; Consumer Discretionary
                     "Auto Components" "Automobiles" "Distributors" "Diversified Consumer Services" "Hotels Restaurants & Leisure"
                     "Household Durables" "Internet & Direct Marketing Retail" "Leisure Products" "Media" "Multiline Retail"
-                    "Specialty Retail" "Textiles Apparel & Luxury Goods"))
+                    "Specialty Retail" "Textiles Apparel & Luxury Goods"
+                    ; Communication Services
+                    "Interactive Media & Services" "Entertainment"))
 
 ; Sector ETFs break down their components by industry
 (define sector-etfs (list "XLB" "XLC" "XLE" "XLF" "XLI" "XLK" "XLP" "XLRE" "XLU" "XLV" "XLY"))
@@ -125,7 +127,7 @@
                         ; Semiconductors
                         "Semiconductors"
                         ; Software & Services
-                        "Application Software" "Data Processing & Outsourced Services" "Home Entertainment Software"
+                        "Application Software" "Data Processing & Outsourced Services" "Home Entertainment Software" "Interactive Home Entertainment"
                         "It Consulting & Other Services" "Research & Consulting Services" "Systems Software"
                         ; Technology Hardware
                         "Electronic Components" "Electronic Equipment & Instruments" "Technology Hardware Storage & Peripherals"
@@ -135,7 +137,8 @@
                         ; Transportation
                         "Air Freight & Logistics" "Airlines" "Airport Services" "Marine" "Railroads" "Trucking"
                         ; Internet
-                        "Internet & Direct Marketing Retail" "Internet Software & Services"))
+                        "Internet & Direct Marketing Retail" "Internet Software & Services" "Interactive Media & Services"
+                        "Internet Services & Infrastructure"))
 
 ; Industry ETFs break down their components by sub-industry
 (define industry-etfs (list "KBE" "KCE" "KIE" "KRE" "XAR" "XBI" "XES" "XHB" "XHE" "XHS" "XME" "XOP" "XPH" "XRT" "XSD" "XSW" "XTH" "XTL" "XTN" "XWEB"))
@@ -153,9 +156,20 @@
           (let*-values ([(sheet-values) (sequence->list (in-lines in))]
                         [(filtered-rows) (filter (λ (r) (= 5 (length (regexp-split #rx"," r)))) sheet-values)]
                         [(rows) (map (λ (r) (apply etf-component (regexp-split #rx"," r))) filtered-rows)]
+                        [(altered-rows) (map (λ (r) (etf-component
+                                                     (etf-component-name r)
+                                                     (etf-component-identifier r)
+                                                     (etf-component-weight r)
+                                                     (case (etf-component-sector r)
+                                                       [("Independent Power and Renewable Electricity Producers") "Independent Power And Renewable Electricity Producers"]
+                                                       [("IT Services") "It Services"]
+                                                       [("IT Consulting & Other Services") "It Consulting & Other Services"]
+                                                       [("Multi-line Insurance") "Multi-Line Insurance"]
+                                                       [else (etf-component-sector r)])
+                                                     (etf-component-shares-held r))) rows)]
                         [(valid-rows invalid-rows) (partition (λ (row) (or (member (etf-component-sector row) sectors)
                                                                            (member (etf-component-sector row) industries)
-                                                                           (member (etf-component-sector row) sub-industries))) rows)])
+                                                                           (member (etf-component-sector row) sub-industries))) altered-rows)])
             (displayln "Will not insert the following rows as the Sector/Industry/Sub-Industry is not in our definitions:")
             (~> (filter (λ (row) (not (void? (etf-component-sector row)))) invalid-rows)
                 (for-each (λ (row) (displayln row)) _))
