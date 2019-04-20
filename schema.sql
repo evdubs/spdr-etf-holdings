@@ -154,9 +154,9 @@ CREATE TYPE spdr.sub_industry AS ENUM
     
 CREATE TABLE spdr.etf_holding
 (
-    etf_symbol text COLLATE pg_catalog."default" NOT NULL,
+    etf_symbol text NOT NULL,
     date date NOT NULL,
-    component_symbol text COLLATE pg_catalog."default" NOT NULL,
+    component_symbol text NOT NULL,
     weight numeric NOT NULL,
     sector spdr.sector,
     industry spdr.industry,
