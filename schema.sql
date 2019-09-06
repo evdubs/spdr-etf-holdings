@@ -75,7 +75,8 @@ CREATE TYPE spdr.industry AS ENUM
   'Textiles Apparel & Luxury Goods', 
   'Tobacco', 
   'Trading Companies & Distributors', 
-  'Water Utilities');
+  'Water Utilities'
+  'Wireless Telecommunication Services');
     
 CREATE TYPE spdr.sub_industry AS ENUM
 ('Aerospace & Defense', 

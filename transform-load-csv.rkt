@@ -87,7 +87,7 @@
                     "Household Durables" "Internet & Direct Marketing Retail" "Leisure Products" "Media" "Multiline Retail"
                     "Specialty Retail" "Textiles Apparel & Luxury Goods"
                     ; Communication Services
-                    "Interactive Media & Services" "Entertainment"))
+                    "Interactive Media & Services" "Entertainment" "Wireless Telecommunication Services"))
 
 ; Sector ETFs break down their components by industry
 (define sector-etfs (list "XLB" "XLC" "XLE" "XLF" "XLI" "XLK" "XLP" "XLRE" "XLU" "XLV" "XLY"))
