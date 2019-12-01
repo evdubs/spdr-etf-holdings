@@ -164,8 +164,8 @@ CREATE TABLE spdr.etf_holding
     sub_industry spdr.sub_industry,
     shares_held numeric NOT NULL,
     CONSTRAINT etf_holding_pkey PRIMARY KEY (etf_symbol, 
-date, 
-component_symbol),
+      date, 
+      component_symbol),
     CONSTRAINT etf_holding_component_symbol_fkey FOREIGN KEY (component_symbol)
         REFERENCES nasdaq.symbol (act_symbol) MATCH SIMPLE
         ON UPDATE NO ACTION
@@ -175,3 +175,25 @@ component_symbol),
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
+
+CREATE OR REPLACE FUNCTION spdr.to_sector_etf(
+	sector spdr.sector)
+    RETURNS text
+    LANGUAGE 'sql'
+AS $BODY$
+select
+  case sector::text
+    when 'Communication Services' then 'XLC'
+    when 'Consumer Discretionary' then 'XLY'
+    when 'Consumer Staples' then 'XLP'
+    when 'Energy' then 'XLE'
+    when 'Financials' then 'XLF'
+    when 'Health Care' then 'XLV'
+    when 'Industrials' then 'XLI'
+    when 'Information Technology' then 'XLK'
+    when 'Materials' then 'XLB'
+    when 'Real Estate' then 'XLRE'
+    when 'Utilities' then 'XLU'
+  end;
+$BODY$;
+

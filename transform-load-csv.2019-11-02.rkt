@@ -1,12 +1,12 @@
 #lang racket/base
 
 (require db
+         gregor
          racket/cmdline
          racket/list
          racket/sequence
          racket/string
          racket/system
-         srfi/19 ; Time Data Types and Procedures
          threading)
 
 (struct etf-component
@@ -24,7 +24,7 @@
 
 (define convert-xls (make-parameter #f))
 
-(define folder-date (make-parameter (current-date)))
+(define folder-date (make-parameter (today)))
 
 (define db-user (make-parameter "user"))
 
@@ -42,7 +42,7 @@
                          (convert-xls #t)]
  [("-d" "--folder-date") date
                          "SPDR ETF Holdings folder date. Defaults to today"
-                         (folder-date (string->date date "~Y-~m-~d"))]
+                         (folder-date (iso8601->date date))]
  [("-n" "--db-name") name
                      "Database name. Defaults to 'local'"
                      (db-name name)]
@@ -146,12 +146,12 @@
 ; Industry ETFs break down their components by sub-industry
 (define industry-etfs (list "KBE" "KCE" "KIE" "KRE" "XAR" "XBI" "XES" "XHB" "XHE" "XHS" "XME" "XOP" "XPH" "XRT" "XSD" "XSW" "XTH" "XTL" "XTN" "XWEB"))
 
-(parameterize ([current-directory (string-append (base-folder) "/" (date->string (folder-date) "~1") "/")])
+(parameterize ([current-directory (string-append (base-folder) "/" (~t (folder-date) "yyyy-MM-dd") "/")])
   (cond [(convert-xls)
          (for ([p (sequence-filter (λ (p) (string-contains? (path->string p) ".xls")) (in-directory))])
            (system (string-append "libreoffice --headless --convert-to csv --outdir " (path->string (current-directory)) " " (path->string p))))])
   (for ([p (sequence-filter (λ (p) (string-contains? (path->string p) ".csv")) (in-directory))])
-    (let ([file-name (string-append (base-folder) "/" (date->string (folder-date) "~1") "/" (path->string p))]
+    (let ([file-name (string-append (base-folder) "/" (~t (folder-date) "yyyy-MM-dd") "/" (path->string p))]
           [ticker-symbol (string-replace (path->string p) ".csv" "")])
       (call-with-input-file file-name
         (λ (in)
@@ -185,7 +185,7 @@
             (with-handlers ([exn:fail? (λ (e) (displayln (string-append "Failed to process "
                                                                         ticker-symbol
                                                                         " for date "
-                                                                        (date->string (folder-date) "~1")))
+                                                                        (~t (folder-date) "yyyy-MM-dd")))
                                          (displayln ((error-value->string-handler) e 1000))
                                          (rollback-transaction dbc)
                                          (set! insert-failure-counter (add1 insert-failure-counter)))])
@@ -215,7 +215,7 @@ insert into spdr.etf_holding
 ) on conflict (etf_symbol, date, component_symbol) do nothing;
 "
                                       ticker-symbol
-                                      (date->string (folder-date) "~1")
+                                      (~t (folder-date) "yyyy-MM-dd")
                                       (case (etf-component-ticker row)
                                         [("CCL.U") "CCL"]
                                         [("*CM") "CM"]

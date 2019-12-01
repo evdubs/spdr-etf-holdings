@@ -1,16 +1,16 @@
 #lang racket/base
 
-(require net/url
+(require gregor
+         net/url
          racket/file
          racket/list
          racket/port
-         srfi/19 ; Time Data Types and Procedures
          tasks
          threading)
 
 (define (download-etf-holdings symbol)
-  (make-directory* (string-append "/var/tmp/spdr/etf-holdings/" (date->string (current-date) "~1")))
-  (call-with-output-file (string-append "/var/tmp/spdr/etf-holdings/" (date->string (current-date) "~1") "/" symbol ".xls")
+  (make-directory* (string-append "/var/tmp/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd")))
+  (call-with-output-file (string-append "/var/tmp/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd") "/" symbol ".xls")
     (λ (out) (~> (string-append "https://us.spdrs.com/site-content/xls/" symbol "_All_Holdings.xls")
                  (string->url _)
                  (get-pure-port _)
