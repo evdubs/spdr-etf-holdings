@@ -26,3 +26,10 @@ The provided schema.sql file shows the expected schema within the target Postgre
 This process assumes you can write to a /var/tmp/spdr folder. This process also assumes you have loaded your database with NASDAQ symbol
 file information. This data is provided by the [nasdaq-symbols](https://github.com/evdubs/nasdaq-symbols) project.
 
+### Dependencies
+
+It is recommended that you start with the standard Racket distribution. With that, you will need to install the following packages:
+
+```bash
+$ raco pkg install --skip-installed gregor tasks threading
+```
