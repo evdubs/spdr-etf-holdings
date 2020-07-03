@@ -81,7 +81,7 @@
                     ; Real Estate
                     "Equity Real Estate Investment Trusts (Reits)" "Real Estate Management & Development"
                     ; Utilities
-                    "Electric Utilities" "Independent Power And Renewable Electricity Producers" "Multi-Utilities" "Water Utilities"
+                    "Electric Utilities" "Gas Utilities" "Independent Power And Renewable Electricity Producers" "Multi-Utilities" "Water Utilities"
                     ; Health Care
                     "Biotechnology" "Health Care Equipment & Supplies" "Health Care Providers & Services" "Health Care Technology"
                     "Life Sciences Tools & Services" "Pharmaceuticals"
