@@ -1,3 +1,5 @@
+CREATE SCHEMA spdr;
+
 CREATE TYPE spdr.sector AS ENUM
 ('Communication Services', 
   'Consumer Discretionary', 
