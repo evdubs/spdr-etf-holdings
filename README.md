@@ -22,8 +22,26 @@ $ racket extract.rkt
 $ racket transform-load-csv.rkt -c
 ```
 
-The provided schema.sql file shows the expected schema within the target PostgreSQL instance. 
-This process assumes you can write to a /var/tmp/spdr folder. This process also assumes you have loaded your database with NASDAQ symbol
+You will need to provide a password for the `transform-load-*.rkt` programs. The available parameters are:
+
+```bash
+$ racket transform-load-csv.2019-11-02.rkt -h
+racket transform-load-csv.2019-11-02.rkt [ <option> ... ]
+ where <option> is one of
+  -b <folder>, --base-folder <folder> : SPDR ETF Holdings base folder. Defaults to /var/tmp/spdr/etf-holdings
+  -c, --convert-xls : Convert XLS documents to CSV for handling. This requires libreoffice to be installed
+  -d <date>, --folder-date <date> : SPDR ETF Holdings folder date. Defaults to today
+  -n <name>, --db-name <name> : Database name. Defaults to 'local'
+  -p <password>, --db-pass <password> : Database password
+  -u <user>, --db-user <user> : Database user name. Defaults to 'user'
+  --help, -h : Show this help
+  -- : Do not treat any remaining argument as a switch (at this level)
+ Multiple single-letter switches can be combined after one `-'; for
+  example: `-h-' is the same as `-h --'
+```
+
+The provided `schema.sql` file shows the expected schema within the target PostgreSQL instance. 
+This process assumes you can write to a `/var/tmp/spdr` folder. This process also assumes you have loaded your database with NASDAQ symbol
 file information. This data is provided by the [nasdaq-symbols](https://github.com/evdubs/nasdaq-symbols) project.
 
 ### Dependencies
@@ -33,3 +51,9 @@ It is recommended that you start with the standard Racket distribution. With tha
 ```bash
 $ raco pkg install --skip-installed gregor tasks threading
 ```
+
+## Format and URL updates
+
+On 2020-01-01, the URL for SPDR ETF documents changed; `extract.2020-01-01.rkt` uses this new location. 
+
+On 2019-11-02, columns were added to the SPDR ETF documents; `transform-load.2019-11-02.rkt` can process these new columns.
