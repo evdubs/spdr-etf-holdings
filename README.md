@@ -22,7 +22,7 @@ $ racket extract.rkt
 $ racket transform-load-csv.rkt -c
 ```
 
-You will need to provide a password for the `transform-load-*.rkt` programs. The available parameters are:
+You will need to provide a database password for the `transform-load-*.rkt` programs. The available parameters are:
 
 ```bash
 $ racket transform-load-csv.2019-11-02.rkt -h
