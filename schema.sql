@@ -166,8 +166,8 @@ CREATE TABLE spdr.etf_holding
     industry spdr.industry,
     sub_industry spdr.sub_industry,
     shares_held numeric NOT NULL,
-    CONSTRAINT etf_holding_pkey PRIMARY KEY (etf_symbol, 
-      date, 
+    CONSTRAINT etf_holding_pkey PRIMARY KEY (date,
+      etf_symbol,
       component_symbol),
     CONSTRAINT etf_holding_component_symbol_fkey FOREIGN KEY (component_symbol)
         REFERENCES nasdaq.symbol (act_symbol) MATCH SIMPLE
