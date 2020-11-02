@@ -170,6 +170,8 @@
                                                        [("IT Services") "It Services"]
                                                        [("IT Consulting & Other Services") "It Consulting & Other Services"]
                                                        [("Multi-line Insurance") "Multi-Line Insurance"]
+                                                       [("Aerospace & Defence") "Aerospace & Defense"]
+                                                       [("Equity Real Estate Investment Trusts (REITs)") "Equity Real Estate Investment Trusts (Reits)"]
                                                        [else (etf-component-sector r)])
                                                      (etf-component-shares-held r)
                                                      (etf-component-local-currency r))) rows)]
