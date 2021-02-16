@@ -1,7 +1,7 @@
 #lang racket/base
 
 (require gregor
-         net/url
+         net/http-easy
          racket/file
          racket/list
          racket/port
@@ -13,8 +13,8 @@
   (call-with-output-file (string-append "/var/tmp/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd") "/" symbol ".xls")
     (λ (out) (~> (string-append "https://www.ssga.com/library-content/products/fund-data/etfs/us/holdings-daily-us-en-"
                                 (string-downcase symbol) ".xlsx")
-                 (string->url _)
-                 (get-pure-port _)
+                 (get _ #:stream? #t)
+                 (response-output _)
                  (copy-port _ out)))
     #:exists 'replace))
 

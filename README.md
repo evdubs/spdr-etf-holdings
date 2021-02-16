@@ -49,7 +49,7 @@ file information. This data is provided by the [nasdaq-symbols](https://github.c
 It is recommended that you start with the standard Racket distribution. With that, you will need to install the following packages:
 
 ```bash
-$ raco pkg install --skip-installed gregor tasks threading
+$ raco pkg install --skip-installed gregor http-easy tasks threading
 ```
 
 ## Format and URL updates
