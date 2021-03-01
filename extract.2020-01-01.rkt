@@ -11,11 +11,16 @@
 (define (download-etf-holdings symbol)
   (make-directory* (string-append "/var/tmp/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd")))
   (call-with-output-file (string-append "/var/tmp/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd") "/" symbol ".xls")
-    (λ (out) (~> (string-append "https://www.ssga.com/library-content/products/fund-data/etfs/us/holdings-daily-us-en-"
-                                (string-downcase symbol) ".xlsx")
-                 (get _ #:stream? #t)
-                 (response-output _)
-                 (copy-port _ out)))
+    (λ (out)
+      (with-handlers ([exn:fail?
+                       (λ (error)
+                         (displayln (string-append "Encountered error for " symbol))
+                         (displayln ((error-value->string-handler) error 1000)))])
+        (~> (string-append "https://www.ssga.com/library-content/products/fund-data/etfs/us/holdings-daily-us-en-"
+                           (string-downcase symbol) ".xlsx")
+            (get _)
+            (response-body _)
+            (write-bytes _ out))))
     #:exists 'replace))
 
 (define spdr-etfs (list
