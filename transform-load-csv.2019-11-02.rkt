@@ -157,27 +157,29 @@
         (λ (in)
           (displayln file-name)
           (let*-values ([(sheet-values) (sequence->list (in-lines in))]
-                        [(filtered-rows) (filter (λ (r) (= 8 (length (regexp-split #rx"," r)))) sheet-values)]
+                        ; we do this string replace hack here because "Technology Hardware, Storage & Peripherals" added a comma.
+                        ; this additional comma messes with our regexp-split call, and I am too lazy to rework it to do real regexp matching
+                        [(altered-rows) (map (λ (r) (~> (string-replace r "Independent Power and Renewable Electricity Producers" "Independent Power And Renewable Electricity Producers")
+                                                        (string-replace _ "IT Services" "It Services")
+                                                        (string-replace _ "IT Consulting & Other Services" "It Consulting & Other Services")
+                                                        (string-replace _ "Multi-line Insurance" "Multi-Line Insurance")
+                                                        (string-replace _ "Aerospace & Defence" "Aerospace & Defense")
+                                                        (string-replace _ "Equity Real Estate Investment Trusts (REITs)" "Equity Real Estate Investment Trusts (Reits)")
+                                                        (string-replace _ "\"Technology Hardware, Storage & Peripherals\"" "Technology Hardware Storage & Peripherals"))) sheet-values)]
+                        [(filtered-rows) (filter (λ (r) (= 8 (length (regexp-split #rx"," r)))) altered-rows)]
                         [(rows) (map (λ (r) (apply etf-component (regexp-split #rx"," r))) filtered-rows)]
-                        [(altered-rows) (map (λ (r) (etf-component
+                        [(components) (map (λ (r) (etf-component
                                                      (etf-component-name r)
                                                      (etf-component-ticker r)
                                                      (etf-component-identifier r)
                                                      (etf-component-sedol r)
                                                      (etf-component-weight r)
-                                                     (case (etf-component-sector r)
-                                                       [("Independent Power and Renewable Electricity Producers") "Independent Power And Renewable Electricity Producers"]
-                                                       [("IT Services") "It Services"]
-                                                       [("IT Consulting & Other Services") "It Consulting & Other Services"]
-                                                       [("Multi-line Insurance") "Multi-Line Insurance"]
-                                                       [("Aerospace & Defence") "Aerospace & Defense"]
-                                                       [("Equity Real Estate Investment Trusts (REITs)") "Equity Real Estate Investment Trusts (Reits)"]
-                                                       [else (etf-component-sector r)])
+                                                     (etf-component-sector r)
                                                      (etf-component-shares-held r)
                                                      (etf-component-local-currency r))) rows)]
                         [(valid-rows invalid-rows) (partition (λ (row) (or (member (etf-component-sector row) sectors)
                                                                            (member (etf-component-sector row) industries)
-                                                                           (member (etf-component-sector row) sub-industries))) altered-rows)])
+                                                                           (member (etf-component-sector row) sub-industries))) components)])
             (displayln "Will not insert the following rows as the Sector/Industry/Sub-Industry is not in our definitions:")
             (~> (filter (λ (row) (not (void? (etf-component-sector row)))) invalid-rows)
                 (for-each (λ (row) (displayln row)) _))
