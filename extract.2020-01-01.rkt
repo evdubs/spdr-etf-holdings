@@ -35,7 +35,7 @@
 
 (define delays (map (λ (x) (* delay-interval x)) (range 0 (length spdr-etfs))))
 
-(with-task-server (for-each (λ (l) (schedule-delayed-task (λ () (download-etf-holdings (first l)))
+(with-task-server (for-each (λ (l) (schedule-delayed-task (λ () (thread (λ () (download-etf-holdings (first l)))))
                                                           (second l)))
                             (map list spdr-etfs delays))
   ; add a final task that will halt the task server
