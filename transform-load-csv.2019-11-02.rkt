@@ -159,13 +159,20 @@
           (let*-values ([(sheet-values) (sequence->list (in-lines in))]
                         ; we do this string replace hack here because "Technology Hardware, Storage & Peripherals" added a comma.
                         ; this additional comma messes with our regexp-split call, and I am too lazy to rework it to do real regexp matching
+                        ;
+                        ; 2021-09-01 update:
+                        ; This has been further missed for "Oil, Gas & Consumable Fuels" and "Hotels, Restaurants & Leisure".
+                        ; Here's a command for the comma check:
+                        ; $ for f in `ls /var/tmp/spdr/etf-holdings/2021-09-01 | grep csv` ; do echo $f ; grep -P "[0-9]+,\".*?\",[0-9]+" /var/tmp/spdr/etf-holdings/2021-09-01/$f ; done
                         [(altered-rows) (map (λ (r) (~> (string-replace r "Independent Power and Renewable Electricity Producers" "Independent Power And Renewable Electricity Producers")
                                                         (string-replace _ "IT Services" "It Services")
                                                         (string-replace _ "IT Consulting & Other Services" "It Consulting & Other Services")
                                                         (string-replace _ "Multi-line Insurance" "Multi-Line Insurance")
                                                         (string-replace _ "Aerospace & Defence" "Aerospace & Defense")
                                                         (string-replace _ "Equity Real Estate Investment Trusts (REITs)" "Equity Real Estate Investment Trusts (Reits)")
-                                                        (string-replace _ "\"Technology Hardware, Storage & Peripherals\"" "Technology Hardware Storage & Peripherals"))) sheet-values)]
+                                                        (string-replace _ "\"Technology Hardware, Storage & Peripherals\"" "Technology Hardware Storage & Peripherals")
+                                                        (string-replace _ "\"Oil, Gas & Consumable Fuels\"" "Oil Gas & Consumable Fuels")
+                                                        (string-replace _ "\"Hotels, Restaurants & Leisure\"" "Hotels Restaurants & Leisure"))) sheet-values)]
                         [(filtered-rows) (filter (λ (r) (= 8 (length (regexp-split #rx"," r)))) altered-rows)]
                         [(rows) (map (λ (r) (apply etf-component (regexp-split #rx"," r))) filtered-rows)]
                         [(components) (map (λ (r) (etf-component
@@ -186,16 +193,18 @@
             (define insert-counter 0)
             (define insert-success-counter 0)
             (define insert-failure-counter 0)
-            (with-handlers ([exn:fail? (λ (e) (displayln (string-append "Failed to process "
-                                                                        ticker-symbol
-                                                                        " for date "
-                                                                        (~t (folder-date) "yyyy-MM-dd")))
-                                         (displayln ((error-value->string-handler) e 1000))
-                                         (rollback-transaction dbc)
-                                         (set! insert-failure-counter (add1 insert-failure-counter)))])
-              (for-each (λ (row)
-                          (set! insert-counter (add1 insert-counter))
-                          (start-transaction dbc)
+            (for-each (λ (row)
+                        (set! insert-counter (add1 insert-counter))
+                        (start-transaction dbc)
+                        (with-handlers ([exn:fail? (λ (e) (displayln (string-append "Failed to process component "
+                                                                                    (etf-component-ticker row)
+                                                                                    " for ETF "
+                                                                                    ticker-symbol
+                                                                                    " on date "
+                                                                                    (date->iso8601 (folder-date))))
+                                                      (displayln ((error-value->string-handler) e 1000))
+                                                      (rollback-transaction dbc)
+                                                      (set! insert-failure-counter (add1 insert-failure-counter)))])
                           (query-exec dbc "
 insert into spdr.etf_holding
 (
@@ -228,9 +237,9 @@ insert into spdr.etf_holding
                                       (if (member ticker-symbol index-etfs) (etf-component-sector row) sql-null)
                                       (if (member ticker-symbol sector-etfs) (etf-component-sector row) sql-null)
                                       (if (member ticker-symbol industry-etfs) (etf-component-sector row) sql-null)
-                                      (etf-component-shares-held row))
+                                      (etf-component-shares-held row)))
                           (commit-transaction dbc)
-                          (set! insert-success-counter (add1 insert-success-counter))) valid-rows))
+                          (set! insert-success-counter (add1 insert-success-counter))) valid-rows)
             (displayln (string-append "Attempted to insert " (number->string insert-counter) " rows. "
                                       (number->string insert-success-counter) " were successful. "
                                       (number->string insert-failure-counter) " failed."))))))))
