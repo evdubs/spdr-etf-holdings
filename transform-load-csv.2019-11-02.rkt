@@ -110,7 +110,7 @@
                         ; Biotechnology
                         "Biotechnology"
                         ; Health Care Equipment
-                        "Health Care Equipment" "Health Care Supplies"
+                        "Health Care Equipment" "Health Care Supplies" "Life Sciences Tools & Services"
                         ; Health Care Services
                         "Health Care Distributors" "Health Care Facilities" "Health Care Services" "Managed Health Care"
                         ; Metals & Mining
@@ -141,7 +141,7 @@
                         "Air Freight & Logistics" "Airlines" "Airport Services" "Marine" "Railroads" "Trucking"
                         ; Internet
                         "Internet & Direct Marketing Retail" "Internet Software & Services" "Interactive Media & Services"
-                        "Internet Services & Infrastructure"))
+                        "Internet Services & Infrastructure" "Real Estate Services"))
 
 ; Industry ETFs break down their components by sub-industry
 (define industry-etfs (list "KBE" "KCE" "KIE" "KRE" "XAR" "XBI" "XES" "XHB" "XHE" "XHS" "XME" "XOP" "XPH" "XRT" "XSD" "XSW" "XTH" "XTL" "XTN" "XWEB"))
@@ -157,6 +157,19 @@
         (λ (in)
           (displayln file-name)
           (let*-values ([(sheet-values) (sequence->list (in-lines in))]
+                        [(ignored-rows) (filter (λ (r) (not (or (string-contains? r "Fund Name:,")
+                                                                (string-contains? r "Ticker Symbol:,")
+                                                                (string-contains? r "Holdings:,")
+                                                                (string-contains? r "Name,Ticker,Identifier,")
+                                                                (string-contains? r "Important Risk Information")
+                                                                (string-contains? r "Diversification does not")
+                                                                (string-contains? r "Investing in commodities")
+                                                                (string-contains? r "Important Information Relating")
+                                                                (string-contains? r "The GLD prospectus")
+                                                                (string-contains? r "The GLDM prospectus")
+                                                                (string-contains? r "is a registered trademark")
+                                                                (string-contains? r "SPD002545")
+                                                                (string-contains? r ",,,,,,,")))) sheet-values)]
                         ; we do this string replace hack here because "Technology Hardware, Storage & Peripherals" added a comma.
                         ; this additional comma messes with our regexp-split call, and I am too lazy to rework it to do real regexp matching
                         ;
@@ -172,18 +185,18 @@
                                                         (string-replace _ "Equity Real Estate Investment Trusts (REITs)" "Equity Real Estate Investment Trusts (Reits)")
                                                         (string-replace _ "\"Technology Hardware, Storage & Peripherals\"" "Technology Hardware Storage & Peripherals")
                                                         (string-replace _ "\"Oil, Gas & Consumable Fuels\"" "Oil Gas & Consumable Fuels")
-                                                        (string-replace _ "\"Hotels, Restaurants & Leisure\"" "Hotels Restaurants & Leisure"))) sheet-values)]
+                                                        (string-replace _ "\"Hotels, Restaurants & Leisure\"" "Hotels Restaurants & Leisure"))) ignored-rows)]
                         [(filtered-rows) (filter (λ (r) (= 8 (length (regexp-split #rx"," r)))) altered-rows)]
                         [(rows) (map (λ (r) (apply etf-component (regexp-split #rx"," r))) filtered-rows)]
                         [(components) (map (λ (r) (etf-component
-                                                     (etf-component-name r)
-                                                     (etf-component-ticker r)
-                                                     (etf-component-identifier r)
-                                                     (etf-component-sedol r)
-                                                     (etf-component-weight r)
-                                                     (etf-component-sector r)
-                                                     (etf-component-shares-held r)
-                                                     (etf-component-local-currency r))) rows)]
+                                                   (etf-component-name r)
+                                                   (etf-component-ticker r)
+                                                   (etf-component-identifier r)
+                                                   (etf-component-sedol r)
+                                                   (etf-component-weight r)
+                                                   (etf-component-sector r)
+                                                   (etf-component-shares-held r)
+                                                   (etf-component-local-currency r))) rows)]
                         [(valid-rows invalid-rows) (partition (λ (row) (or (member (etf-component-sector row) sectors)
                                                                            (member (etf-component-sector row) industries)
                                                                            (member (etf-component-sector row) sub-industries))) components)])
@@ -195,7 +208,6 @@
             (define insert-failure-counter 0)
             (for-each (λ (row)
                         (set! insert-counter (add1 insert-counter))
-                        (start-transaction dbc)
                         (with-handlers ([exn:fail? (λ (e) (displayln (string-append "Failed to process component "
                                                                                     (etf-component-ticker row)
                                                                                     " for ETF "
@@ -205,6 +217,7 @@
                                                       (displayln ((error-value->string-handler) e 1000))
                                                       (rollback-transaction dbc)
                                                       (set! insert-failure-counter (add1 insert-failure-counter)))])
+                          (start-transaction dbc)
                           (query-exec dbc "
 insert into spdr.etf_holding
 (
@@ -237,9 +250,9 @@ insert into spdr.etf_holding
                                       (if (member ticker-symbol index-etfs) (etf-component-sector row) sql-null)
                                       (if (member ticker-symbol sector-etfs) (etf-component-sector row) sql-null)
                                       (if (member ticker-symbol industry-etfs) (etf-component-sector row) sql-null)
-                                      (etf-component-shares-held row)))
+                                      (etf-component-shares-held row))
                           (commit-transaction dbc)
-                          (set! insert-success-counter (add1 insert-success-counter))) valid-rows)
+                          (set! insert-success-counter (add1 insert-success-counter)))) valid-rows)
             (displayln (string-append "Attempted to insert " (number->string insert-counter) " rows. "
                                       (number->string insert-success-counter) " were successful. "
                                       (number->string insert-failure-counter) " failed."))))))))
