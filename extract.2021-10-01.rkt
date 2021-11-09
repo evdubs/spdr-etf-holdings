@@ -10,7 +10,7 @@
 
 (define (download-etf-holdings symbol)
   (make-directory* (string-append "/var/tmp/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd")))
-  (call-with-output-file (string-append "/var/tmp/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd") "/" symbol ".xls")
+  (call-with-output-file* (string-append "/var/tmp/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd") "/" symbol ".xls")
     (λ (out)
       (with-handlers ([exn:fail?
                        (λ (error)
