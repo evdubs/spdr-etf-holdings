@@ -147,7 +147,7 @@
                                                                         ticker-symbol
                                                                         " for date "
                                                                         (date->string (folder-date) "~1")))
-                                         (displayln ((error-value->string-handler) e 1000))
+                                         (displayln e)
                                          (rollback-transaction dbc))])
               (for-each (λ (row)
                           (start-transaction dbc)

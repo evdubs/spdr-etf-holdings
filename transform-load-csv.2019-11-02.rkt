@@ -214,7 +214,7 @@
                                                                                     ticker-symbol
                                                                                     " on date "
                                                                                     (date->iso8601 (folder-date))))
-                                                      (displayln ((error-value->string-handler) e 1000))
+                                                      (displayln e)
                                                       (rollback-transaction dbc)
                                                       (set! insert-failure-counter (add1 insert-failure-counter)))])
                           (start-transaction dbc)

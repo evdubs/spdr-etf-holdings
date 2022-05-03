@@ -180,7 +180,7 @@
                                                                         ticker-symbol
                                                                         " for date "
                                                                         (date->string (folder-date) "~1")))
-                                         (displayln ((error-value->string-handler) e 1000))
+                                         (displayln e)
                                          (rollback-transaction dbc)
                                          (set! insert-failure-counter (add1 insert-failure-counter)))])
               (for-each (λ (row)

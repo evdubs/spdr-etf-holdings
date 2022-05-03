@@ -15,7 +15,7 @@
       (with-handlers ([exn:fail?
                        (λ (error)
                          (displayln (string-append "Encountered error for " symbol))
-                         (displayln ((error-value->string-handler) error 1000)))])
+                         (displayln error))])
         (~> (string-append "https://www.ssga.com/library-content/products/fund-data/etfs/us/holdings-daily-us-en-"
                            (string-downcase symbol) ".xlsx")
             (get _)
