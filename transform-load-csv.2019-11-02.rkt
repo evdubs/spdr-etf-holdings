@@ -67,28 +67,31 @@
                     ; Energy
                     "Energy Equipment & Services" "Oil Gas & Consumable Fuels"
                     ; Financials
-                    "Banks" "Capital Markets" "Consumer Finance" "Diversified Financial Services" "Insurance"
+                    "Banks" "Capital Markets" "Consumer Finance" "Diversified Financial Services" "Financial Services" "Insurance"
                     ; Industrials
                     "Aerospace & Defense" "Air Freight & Logistics" "Airlines" "Building Products" "Commercial Services & Supplies"
-                    "Construction & Engineering" "Electrical Equipment" "Industrial Conglomerates" "Machinery" "Professional Services"
-                    "Road & Rail" "Trading Companies & Distributors"
+                    "Construction & Engineering" "Electrical Equipment" "Ground Transportation" "Industrial Conglomerates" "Machinery"
+                    "Professional Services" "Road & Rail" "Trading Companies & Distributors"
                     ; Technology
                     "Communications Equipment" "Diversified Telecommunication Services" "Electronic Equipment Instruments & Components"
                     "Internet Software & Services" "It Services" "Semiconductors & Semiconductor Equipment" "Software"
                     "Technology Hardware Storage & Peripherals"
                     ; Consumer Staples
-                    "Beverages" "Food & Staples Retailing" "Food Products" "Household Products" "Personal Products" "Tobacco"
+                    "Beverages" "Consumer Staples Distribution & Retail" "Food & Staples Retailing" "Food Products" "Household Products"
+                    "Personal Care Products" "Personal Products" "Tobacco"
                     ; Real Estate
-                    "Equity Real Estate Investment Trusts (Reits)" "Real Estate Management & Development"
+                    "Equity Real Estate Investment Trusts (Reits)" "Health Care REITs" "Hotel & Resort REITs" "Industrial REITs"
+                    "Office REITs" "Real Estate Management & Development" "Residential REITs" "Retail REITs" "Specialized REITs"
                     ; Utilities
-                    "Electric Utilities" "Gas Utilities" "Independent Power And Renewable Electricity Producers" "Multi-Utilities" "Water Utilities"
+                    "Electric Utilities" "Gas Utilities" "Independent Power And Renewable Electricity Producers" "Multi-Utilities"
+                    "Water Utilities"
                     ; Health Care
                     "Biotechnology" "Health Care Equipment & Supplies" "Health Care Providers & Services" "Health Care Technology"
                     "Life Sciences Tools & Services" "Pharmaceuticals"
                     ; Consumer Discretionary
-                    "Auto Components" "Automobiles" "Distributors" "Diversified Consumer Services" "Hotels Restaurants & Leisure"
-                    "Household Durables" "Internet & Direct Marketing Retail" "Leisure Products" "Media" "Multiline Retail"
-                    "Specialty Retail" "Textiles Apparel & Luxury Goods"
+                    "Auto Components" "Automobile Components" "Automobiles" "Broadline Retail" "Distributors" "Diversified Consumer Services"
+                    "Hotels Restaurants & Leisure" "Household Durables" "Internet & Direct Marketing Retail" "Leisure Products" "Media"
+                    "Multiline Retail" "Specialty Retail" "Textiles Apparel & Luxury Goods"
                     ; Communication Services
                     "Interactive Media & Services" "Entertainment" "Wireless Telecommunication Services"))
 
@@ -97,8 +100,8 @@
 
 (define sub-industries (list
                         ; Banks
-                        "Asset Management & Custody Banks" "Diversified Banks" "Other Diversified Financial Services" "Regional Banks"
-                        "Thrifts & Mortgage Finance"
+                        "Asset Management & Custody Banks" "Commercial & Residential Mortgage Finance" "Diversified Banks"
+                        "Other Diversified Financial Services" "Regional Banks" "Thrifts & Mortgage Finance"
                         ; Capital Markets
                         "Asset Management & Custody Banks" "Financial Exchanges & Data" "Investment Banking & Brokerage"
                         ; Insurance
@@ -120,25 +123,27 @@
                         ; Oil & Gas Exploration & Production
                         "Integrated Oil & Gas" "Oil & Gas Exploration & Production" "Oil & Gas Refining & Marketing"
                         ; Homebuilders
-                        "Building Products" "Home Furnishings" "Home Improvement Retail" "Homebuilding" "Homefurnishing Retail" "Household Appliances" 
+                        "Building Products" "Home Furnishings" "Home Improvement Retail" "Homebuilding" "Homefurnishing Retail"
+                        "Household Appliances" 
                         ; Pharmaceuticals
                         "Pharmaceuticals"
                         ; Retail
-                        "Apparel Retail" "Automotive Retail" "Computer & Electronics Retail" "Department Stores" "Drug Retail"
-                        "Food Retail" "General Merchandise Stores" "Hypermarkets & Super Centers" "Internet & Direct Marketing Retail"
-                        "Specialty Stores"
+                        "Apparel Retail" "Automotive Retail" "Broadline Retail" "Computer & Electronics Retail"
+                        "Consumer Staples Merchandise Retail" "Department Stores" "Drug Retail" "Food Retail" "General Merchandise Stores"
+                        "Hypermarkets & Super Centers" "Internet & Direct Marketing Retail" "Other Specialty Retail" "Specialty Stores"
                         ; Semiconductors
                         "Semiconductors"
                         ; Software & Services
-                        "Application Software" "Data Processing & Outsourced Services" "Home Entertainment Software" "Interactive Home Entertainment"
-                        "It Consulting & Other Services" "Research & Consulting Services" "Systems Software"
+                        "Application Software" "Data Processing & Outsourced Services" "Home Entertainment Software"
+                        "Interactive Home Entertainment" "It Consulting & Other Services" "Research & Consulting Services" "Systems Software"
                         ; Technology Hardware
                         "Electronic Components" "Electronic Equipment & Instruments" "Technology Hardware Storage & Peripherals"
                         ; Telecommunications
                         "Alternative Carriers" "Communications Equipment" "Integrated Telecommunication Services"
                         "Wireless Telecommunication Services"
                         ; Transportation
-                        "Air Freight & Logistics" "Airlines" "Airport Services" "Marine" "Railroads" "Trucking"
+                        "Air Freight & Logistics" "Airlines" "Airport Services" "Cargo Ground Transportation" "Marine" "Passenger Airlines"
+                        "Passenger Ground Transportation" "Rail Transportation" "Railroads" "Trucking"
                         ; Internet
                         "Internet & Direct Marketing Retail" "Internet Software & Services" "Interactive Media & Services"
                         "Internet Services & Infrastructure" "Real Estate Services"))
