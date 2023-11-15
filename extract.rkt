@@ -19,7 +19,7 @@
 
 (define spdr-etfs (list
                    ; Core ETFs
-                   "DIA" "MDY" "SLY" "SPY"
+                   "DIA" "MDY" "SLY" "SPSM" "SPY"
                    ; Sector ETFs
                    "XLB" "XLC" "XLE" "XLF" "XLI" "XLK" "XLP" "XLRE" "XLU" "XLV" "XLY"
                    ; Industry (Modified Equal Weighted) ETFs

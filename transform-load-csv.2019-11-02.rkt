@@ -56,10 +56,12 @@
 (define dbc (postgresql-connect #:user (db-user) #:database (db-name) #:password (db-pass)))
 
 (define sectors (list "Communication Services" "Consumer Discretionary" "Consumer Staples" "Energy" "Financials" "Health Care"
-                      "Industrials" "Information Technology" "Materials" "Real Estate" "Telecommunication Services" "Utilities"))
+                      "Industrials" "Information Technology" "Materials" "Real Estate" "Telecommunication Services" "Utilities"
+                      ; null
+                      "-"))
 
 ; Core ETFs break down their components by sector
-(define index-etfs (list "DIA" "MDY" "SLY" "SPY"))
+(define index-etfs (list "DIA" "MDY" "SLY" "SPSM" "SPY"))
 
 (define industries (list
                     ; Materials
@@ -93,7 +95,9 @@
                     "Hotels Restaurants & Leisure" "Household Durables" "Internet & Direct Marketing Retail" "Leisure Products" "Media"
                     "Multiline Retail" "Specialty Retail" "Textiles Apparel & Luxury Goods"
                     ; Communication Services
-                    "Interactive Media & Services" "Entertainment" "Wireless Telecommunication Services"))
+                    "Interactive Media & Services" "Entertainment" "Wireless Telecommunication Services"
+                    ; null
+                    "-"))
 
 ; Sector ETFs break down their components by industry
 (define sector-etfs (list "XLB" "XLC" "XLE" "XLF" "XLI" "XLK" "XLP" "XLRE" "XLU" "XLV" "XLY"))
@@ -146,7 +150,9 @@
                         "Passenger Ground Transportation" "Rail Transportation" "Railroads" "Trucking"
                         ; Internet
                         "Internet & Direct Marketing Retail" "Internet Software & Services" "Interactive Media & Services"
-                        "Internet Services & Infrastructure" "Real Estate Services"))
+                        "Internet Services & Infrastructure" "Real Estate Services"
+                        ; null
+                        "-"))
 
 ; Industry ETFs break down their components by sub-industry
 (define industry-etfs (list "KBE" "KCE" "KIE" "KRE" "XAR" "XBI" "XES" "XHB" "XHE" "XHS" "XME" "XOP" "XPH" "XRT" "XSD" "XSW" "XTH" "XTL" "XTN" "XWEB"))
@@ -239,9 +245,18 @@ insert into spdr.etf_holding
   $2::text::date,
   $3,
   $4::text::numeric,
-  $5::text::spdr.sector,
-  $6::text::spdr.industry,
-  $7::text::spdr.sub_industry,
+  case
+    when $5 = '-' then null
+    else $5::text::spdr.sector
+  end,
+  case
+    when $6 = '-' then null
+    else $6::text::spdr.industry
+  end,
+  case
+    when $7 = '-' then null
+    else $7::text::spdr.sub_industry
+  end,
   $8::text::numeric
 ) on conflict (etf_symbol, date, component_symbol) do nothing;
 "
