@@ -56,7 +56,7 @@
                       "Industrials" "Information Technology" "Materials" "Real Estate" "Telecommunication Services" "Utilities"))
 
 ; Core ETFs break down their components by sector
-(define index-etfs (list "DIA" "MDY" "SLY" "SPY"))
+(define index-etfs (list "DIA" "MDY" "SLY" "SPSM" "SPY"))
 
 (define industries (list
                     ; Materials
