@@ -74,7 +74,8 @@ CREATE TYPE spdr.industry AS ENUM
   'Multi-Utilities', 
   'Multiline Retail',
   'Office REITs',
-  'Oil Gas & Consumable Fuels', 
+  'Oil Gas & Consumable Fuels',
+  'Personal Care Products',
   'Personal Products', 
   'Pharmaceuticals', 
   'Professional Services', 
@@ -90,7 +91,7 @@ CREATE TYPE spdr.industry AS ENUM
   'Textiles Apparel & Luxury Goods', 
   'Tobacco', 
   'Trading Companies & Distributors', 
-  'Water Utilities'
+  'Water Utilities',
   'Wireless Telecommunication Services');
     
 CREATE TYPE spdr.sub_industry AS ENUM
@@ -163,7 +164,7 @@ CREATE TYPE spdr.sub_industry AS ENUM
   'Passenger Ground Transportation',
   'Pharmaceuticals', 
   'Property & Casualty Insurance',
-  'Rail Transportation'
+  'Rail Transportation',
   'Railroads',
   'Real Estate Services',
   'Regional Banks', 
@@ -223,3 +224,65 @@ select
   end;
 $BODY$;
 
+CREATE OR REPLACE FUNCTION spdr.is_market_etf(etf text) RETURNS boolean
+    LANGUAGE sql
+    AS $$
+  select
+    case etf
+      when 'DIA' then true
+      when 'MDY' then true
+      when 'SLY' then true
+      when 'SPSM' then true
+      when 'SPY' then true
+      else false
+    end;
+$$;
+
+CREATE FUNCTION spdr.is_sector_etf(etf text) RETURNS boolean
+    LANGUAGE sql
+    AS $$
+  select
+    case etf
+      when 'XLB' then true
+      when 'XLC' then true
+      when 'XLE' then true
+      when 'XLF' then true
+      when 'XLI' then true
+      when 'XLK' then true
+      when 'XLP' then true
+      when 'XLRE' then true
+      when 'XLU' then true
+      when 'XLV' then true
+      when 'XLY' then true
+      else false
+    end;
+$$;
+
+CREATE FUNCTION spdr.is_industry_etf(etf text) RETURNS boolean
+    LANGUAGE sql
+    AS $$
+  select
+    case etf
+      when 'KBE' then true
+      when 'KCE' then true
+      when 'KIE' then true
+      when 'KRE' then true
+      when 'XAR' then true
+      when 'XBI' then true
+      when 'XES' then true
+      when 'XHB' then true
+      when 'XHE' then true
+      when 'XHS' then true
+      when 'XME' then true
+      when 'XOP' then true
+      when 'XPH' then true
+      when 'XRT' then true
+      when 'XSD' then true
+      when 'XSW' then true
+      when 'XTH' then true
+      when 'XTL' then true
+      when 'XTN' then true
+      when 'XWEB' then true
+      else false
+    end;
+$$;
