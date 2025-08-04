@@ -11,7 +11,7 @@ On other platforms, you will need to do something like the following (and will n
 
 ```bash
 $ racket extract.rkt
-$ for f in `ls /var/tmp/spdr/etf-holdings/date/` ; do libreoffice --headless --convert-to csv --outdir /var/tmp/spdr/etf-holdings/date $f ; done
+$ for f in `ls /var/local/spdr/etf-holdings/date/` ; do libreoffice --headless --convert-to csv --outdir /var/local/spdr/etf-holdings/date $f ; done
 $ racket transform-load-csv.rkt
 ```
 
@@ -28,7 +28,7 @@ You will need to provide a database password for the `transform-load-*.rkt` prog
 $ racket transform-load-csv.2019-11-02.rkt -h
 racket transform-load-csv.2019-11-02.rkt [ <option> ... ]
  where <option> is one of
-  -b <folder>, --base-folder <folder> : SPDR ETF Holdings base folder. Defaults to /var/tmp/spdr/etf-holdings
+  -b <folder>, --base-folder <folder> : SPDR ETF Holdings base folder. Defaults to /var/local/spdr/etf-holdings
   -c, --convert-xls : Convert XLS documents to CSV for handling. This requires libreoffice to be installed
   -d <date>, --folder-date <date> : SPDR ETF Holdings folder date. Defaults to today
   -n <name>, --db-name <name> : Database name. Defaults to 'local'
@@ -41,7 +41,7 @@ racket transform-load-csv.2019-11-02.rkt [ <option> ... ]
 ```
 
 The provided `schema.sql` file shows the expected schema within the target PostgreSQL instance. 
-This process assumes you can write to a `/var/tmp/spdr` folder. This process also assumes you have loaded your database with NASDAQ symbol
+This process assumes you can write to a `/var/local/spdr` folder. This process also assumes you have loaded your database with NASDAQ symbol
 file information. This data is provided by the [nasdaq-symbols](https://github.com/evdubs/nasdaq-symbols) project.
 
 ### Dependencies

@@ -9,8 +9,8 @@
          threading)
 
 (define (download-etf-holdings symbol)
-  (make-directory* (string-append "/var/tmp/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd")))
-  (call-with-output-file (string-append "/var/tmp/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd") "/" symbol ".xls")
+  (make-directory* (string-append "/var/local/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd")))
+  (call-with-output-file (string-append "/var/local/spdr/etf-holdings/" (~t (today) "yyyy-MM-dd") "/" symbol ".xls")
     (λ (out) (~> (string-append "https://us.spdrs.com/site-content/xls/" symbol "_All_Holdings.xls")
                  (string->url _)
                  (get-pure-port _)

@@ -9,7 +9,7 @@
          threading
          "xls-api.rkt")
 
-(define base-folder (make-parameter "/var/tmp/spdr/etf-holdings"))
+(define base-folder (make-parameter "/var/local/spdr/etf-holdings"))
 
 (define folder-date (make-parameter (current-date)))
 
@@ -23,7 +23,7 @@
  #:program "racket transform-load-com.rkt"
  #:once-each
  [("-b" "--base-folder") folder
-                         "SPDR ETF Holdings base folder. Defaults to /var/tmp/spdr/etf-holdings"
+                         "SPDR ETF Holdings base folder. Defaults to /var/local/spdr/etf-holdings"
                          (base-folder folder)]
  [("-d" "--folder-date") date
                          "SPDR ETF Holdings folder date. Defaults to today"

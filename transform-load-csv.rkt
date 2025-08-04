@@ -17,7 +17,7 @@
    shares-held)
   #:transparent)
 
-(define base-folder (make-parameter "/var/tmp/spdr/etf-holdings"))
+(define base-folder (make-parameter "/var/local/spdr/etf-holdings"))
 
 (define convert-xls (make-parameter #f))
 
@@ -33,7 +33,7 @@
  #:program "racket transform-load-csv.rkt"
  #:once-each
  [("-b" "--base-folder") folder
-                         "SPDR ETF Holdings base folder. Defaults to /var/tmp/spdr/etf-holdings"
+                         "SPDR ETF Holdings base folder. Defaults to /var/local/spdr/etf-holdings"
                          (base-folder folder)]
  [("-c" "--convert-xls") "Convert XLS documents to CSV for handling. This requires libreoffice to be installed"
                          (convert-xls #t)]

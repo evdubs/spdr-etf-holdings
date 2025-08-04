@@ -20,7 +20,7 @@
    local-currency)
   #:transparent)
 
-(define base-folder (make-parameter "/var/tmp/spdr/etf-holdings"))
+(define base-folder (make-parameter "/var/local/spdr/etf-holdings"))
 
 (define convert-xls (make-parameter #f))
 
@@ -36,7 +36,7 @@
  #:program "racket transform-load-csv.2019-11-02.rkt"
  #:once-each
  [("-b" "--base-folder") folder
-                         "SPDR ETF Holdings base folder. Defaults to /var/tmp/spdr/etf-holdings"
+                         "SPDR ETF Holdings base folder. Defaults to /var/local/spdr/etf-holdings"
                          (base-folder folder)]
  [("-c" "--convert-xls") "Convert XLS documents to CSV for handling. This requires libreoffice to be installed"
                          (convert-xls #t)]
@@ -187,7 +187,7 @@
                         ; 2021-09-01 update:
                         ; This has been further missed for "Oil, Gas & Consumable Fuels" and "Hotels, Restaurants & Leisure".
                         ; Here's a command for the comma check:
-                        ; $ for f in `ls /var/tmp/spdr/etf-holdings/2021-09-01 | grep csv` ; do echo $f ; grep -P "[0-9]+,\".*?\",[0-9]+" /var/tmp/spdr/etf-holdings/2021-09-01/$f ; done
+                        ; $ for f in `ls /var/local/spdr/etf-holdings/2021-09-01 | grep csv` ; do echo $f ; grep -P "[0-9]+,\".*?\",[0-9]+" /var/local/spdr/etf-holdings/2021-09-01/$f ; done
                         [(altered-rows) (map (λ (r) (~> (string-replace r "Independent Power and Renewable Electricity Producers" "Independent Power And Renewable Electricity Producers")
                                                         (string-replace _ "IT Services" "It Services")
                                                         (string-replace _ "IT Consulting & Other Services" "It Consulting & Other Services")
