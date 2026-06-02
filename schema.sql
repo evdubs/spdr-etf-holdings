@@ -186,7 +186,7 @@ CREATE TYPE spdr.sub_industry AS ENUM
   'Hotels, Resorts & Cruise Lines',
   'Household Appliances',
   'Household Products',
-  'Houseware & Specialties',
+  'Housewares & Specialties',
   'Human Resource & Employment Services',
   'Hypermarkets & Super Centers',
   'IT Consulting & Other Services',
